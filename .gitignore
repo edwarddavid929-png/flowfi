@@ -11,6 +11,21 @@ e2e-results
 **/test_snapshots/
 .npm-cache/
 
+# Rust / Cargo build artifacts
+**/*.wasm
+**/*.optimized.wasm
+contracts/*/target/
+deployment-info.json
+
+# Editor / IDE directories
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS-generated files
+Thumbs.db
+
 # Scratch / draft markdown files — never commit
 fix.md
 issue*.md

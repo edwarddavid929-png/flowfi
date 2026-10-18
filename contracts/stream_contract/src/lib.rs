@@ -1925,9 +1925,12 @@ impl StreamContract {
             .saturating_sub(claimable_at_resume);
 
         let new_end_time = match stream.schedule {
-            // A linear stream is guaranteed rate >= 1 by create_stream's
-            // InvalidRate guard, so the division is safe here.
-            VestingSchedule::Linear => now + (remaining / stream.rate_per_second) as u64,
+            // Use project_end_time for checked arithmetic — a top-up followed
+            // by a resume could produce a remaining balance large enough to
+            // overflow a raw `as u64` cast.
+            VestingSchedule::Linear => {
+                Self::project_end_time(now, remaining, stream.rate_per_second)?
+            }
             // Step and hybrid schedules are anchored to absolute timestamps;
             // ask the schedule-aware projection instead of dividing.
             _ => {
